@@ -70,6 +70,9 @@ INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,
 INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('padding','Padding','style','int','px','6',0,200,'',31);
 INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('bg_color','Background','style','color','','#264f78',NULL,NULL,'',40);
 INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('border_color','Border','style','color','','#3f3f46',NULL,NULL,'',41);
+INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('tooltip','Tooltip','help','text','','',NULL,NULL,'',50);
+INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('help','Help','help','text','','',NULL,NULL,'',51);
+INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('shortcut','Shortcut','help','text','','',NULL,NULL,'',52);
 
 --  component blueprints (DEFAULT source + category)
 INSERT INTO component_defs (name,description,category) VALUES ('toolbar','Horizontal bar, usually anchored top/bottom full width','parent');

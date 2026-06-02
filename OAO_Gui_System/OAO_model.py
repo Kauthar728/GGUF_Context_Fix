@@ -293,6 +293,10 @@ class Catalog:
             "padding": num("padding", 6.0),
             "bg_color": txt("bg_color", "#1e1e1e"),
             "border_color": txt("border_color", "#3f3f46"),
+            # help layer: hover tooltip, statusbar/contextual help, key shortcut
+            "tooltip": txt("tooltip", ""),
+            "help": txt("help", ""),
+            "shortcut": txt("shortcut", ""),
         }
 
     # -- collision-free docking layout ------------------------------------
