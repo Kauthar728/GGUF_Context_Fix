@@ -33,7 +33,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from model import Catalog, Instance
+from OAO_model import Catalog, Instance
 
 
 class _ColorField(QWidget):

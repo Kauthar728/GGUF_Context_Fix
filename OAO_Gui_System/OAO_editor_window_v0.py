@@ -33,10 +33,10 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-import storage
-from canvas import Canvas
-from model import Catalog, Instance
-from property_panel import PropertyPanel
+import OAO_storage as storage
+from OAO_canvas import Canvas
+from OAO_model import Catalog, Instance
+from OAO_property_panel import PropertyPanel
 
 
 class EditorWindow(QMainWindow):
