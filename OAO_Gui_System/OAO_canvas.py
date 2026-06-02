@@ -15,7 +15,7 @@ from PyQt6.QtCore import QRectF, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QFont, QPainter, QPen
 from PyQt6.QtWidgets import QWidget
 
-from model import Catalog, Instance
+from OAO_model import Catalog, Instance
 
 
 class Canvas(QWidget):

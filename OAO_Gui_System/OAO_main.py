@@ -13,7 +13,7 @@ import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from OaO_editor_window import EditorWindow
+from OAO_editor_window import EditorWindow
 
 DEFAULT_SQL = "containers.sql"
 

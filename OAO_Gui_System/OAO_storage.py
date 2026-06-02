@@ -28,7 +28,7 @@ import os
 import sqlite3
 import tempfile
 
-from model import (
+from OAO_model import (
     Catalog,
     ComponentConstraint,
     ComponentDef,
