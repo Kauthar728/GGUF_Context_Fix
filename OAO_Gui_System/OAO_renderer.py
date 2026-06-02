@@ -25,6 +25,7 @@ import os
 import sys
 
 from PyQt6.QtCore import QRectF, Qt, QTimer
+from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import (
     QApplication,
     QFrame,
@@ -147,7 +148,15 @@ def make_widget(parent: QWidget, inst: Instance, g: dict) -> QWidget:
         w.setStyleSheet(
             f"QFrame{{background:{bg};border:1px solid {border};border-radius:4px;}}"
         )
-    w.setToolTip(f"{name}  [{comp}]")
+    # help layer (data-driven): hover tooltip + contextual statusbar help.
+    tip = g.get("tooltip") or ""
+    sc = g.get("shortcut") or ""
+    base_tip = tip or f"{name}  [{comp}]"
+    w.setToolTip(f"{base_tip}  ({sc})" if sc else base_tip)
+    help_text = g.get("help") or ""
+    if help_text:
+        w.setStatusTip(help_text)        # shown in the window status bar on hover/focus
+        w.setWhatsThis(help_text)        # Shift+F1 contextual help
     return w
 
 
@@ -171,10 +180,12 @@ class RenderedApp(QMainWindow):
         self._catalog = catalog
         self._instances = instances
         self._widgets: dict[int, QWidget] = {}
+        self._shortcuts: list[QShortcut] = []
 
         self._root = QWidget()
         self._root.setStyleSheet("background:#1e1e1e;")
         self.setCentralWidget(self._root)
+        self.statusBar().showMessage("Ready")  # hover an item to see its help here
         self._build()
 
     def set_data(self, catalog: Catalog, instances: list[Instance]) -> None:
@@ -187,6 +198,10 @@ class RenderedApp(QMainWindow):
             w.setParent(None)
             w.deleteLater()
         self._widgets.clear()
+        for sc in self._shortcuts:
+            sc.setParent(None)
+            sc.deleteLater()
+        self._shortcuts.clear()
 
     def _build(self) -> None:
         self._clear()
@@ -194,10 +209,41 @@ class RenderedApp(QMainWindow):
         for inst in sorted(self._instances, key=lambda i: (i.parent_id != 0, i.id)):
             parent_w = self._widgets.get(inst.parent_id, self._root)
             g = self._catalog.geometry(inst)
-            self._widgets[inst.id] = make_widget(parent_w, inst, g)
+            w = make_widget(parent_w, inst, g)
+            self._widgets[inst.id] = w
+            if isinstance(w, QPushButton):
+                nm = g["name"]
+                w.clicked.connect(
+                    lambda _=False, n=nm: self.statusBar().showMessage(
+                        f"Clicked: {n}", 2000))
+            self._bind_shortcut(inst, g)
         self._relayout()
         for w in self._widgets.values():
             w.show()
+
+    def _bind_shortcut(self, inst: Instance, g: dict) -> None:
+        """Wire a keyboard shortcut (from the spec) to the instance's widget:
+        a button is clicked, anything else is focused. Data-driven, so editing
+        the spec changes the live key bindings on reload."""
+        seq = (g.get("shortcut") or "").strip()
+        if not seq:
+            return
+        ks = QKeySequence(seq)
+        if ks.isEmpty():
+            return
+        w = self._widgets.get(inst.id)
+        if w is None:
+            return
+        sc = QShortcut(ks, self)
+
+        def trigger(target: QWidget = w) -> None:
+            if isinstance(target, QPushButton):
+                target.animateClick()
+            else:
+                target.setFocus(Qt.FocusReason.ShortcutFocusReason)
+
+        sc.activated.connect(trigger)
+        self._shortcuts.append(sc)
 
     def _relayout(self) -> None:
         if not self._instances:

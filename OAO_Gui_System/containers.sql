@@ -70,6 +70,9 @@ INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,
 INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('padding','Padding','style','int','px','6',0,200,'',31);
 INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('bg_color','Background','style','color','','#264f78',NULL,NULL,'',40);
 INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('border_color','Border','style','color','','#3f3f46',NULL,NULL,'',41);
+INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('tooltip','Tooltip','help','text','','',NULL,NULL,'',50);
+INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('help','Help','help','text','','',NULL,NULL,'',51);
+INSERT INTO property_defs (key,label,grp,datatype,unit,default_value,global_min,global_max,enum_values,sort_order) VALUES ('shortcut','Shortcut','help','text','','',NULL,NULL,'',52);
 
 --  component blueprints (DEFAULT source + category)
 INSERT INTO component_defs (name,description,category) VALUES ('toolbar','Horizontal bar, usually anchored top/bottom full width','parent');
@@ -112,6 +115,9 @@ INSERT INTO instances (id,name,component,parent_id,workspace_id) VALUES (3,'Stat
 INSERT INTO instances (id,name,component,parent_id,workspace_id) VALUES (4,'SaveBtn','button',1,1);
 INSERT INTO instance_values (instance_id,prop_key,value) VALUES (4,'x_pct','2');
 INSERT INTO instance_values (instance_id,prop_key,value) VALUES (4,'name','Save');
+INSERT INTO instance_values (instance_id,prop_key,value) VALUES (4,'tooltip','Save the current document');
+INSERT INTO instance_values (instance_id,prop_key,value) VALUES (4,'help','Writes the current layout to disk.');
+INSERT INTO instance_values (instance_id,prop_key,value) VALUES (4,'shortcut','Ctrl+S');
 
 --  Workspace 2: Minimal mode = just a toolbar.
 INSERT INTO instances (id,name,component,parent_id,workspace_id) VALUES (5,'MainToolbar','toolbar',0,2);
