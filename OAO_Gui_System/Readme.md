@@ -35,8 +35,8 @@ resolver in `model.py` at render time.
 
 ```bash
 pip install -r requirements.txt
-python main.py                 # uses ./containers.sql (created if missing)
-python main.py path/to/my.sql  # or point it at any .sql
+python OAO_main.py                 # uses ./containers.sql (created if missing)
+python OAO_main.py path/to/my.sql  # or point it at any .sql
 ```
 
 ## Layout
@@ -117,12 +117,12 @@ into a `.db`, and your app reads from the database.
 
 | File | Responsibility |
 |------|----------------|
-| `model.py` | dataclasses + `Catalog` resolver (effective min/max/default, clamping, no-overflow). No Qt, no SQL. |
-| `storage.py` | load/save the 5-table `.sql` file via SQLite; preserve schema, regenerate seed. |
-| `canvas.py` | live preview; resolve geometry → pixels; select + drag; parent-governs-child nesting. |
-| `property_panel.py` | dynamic VS-style property grid (default/set/reset, inline ranges). |
-| `editor_window.py` | wiring: list + canvas + panel + toolbar + file watcher. |
-| `main.py` | entry point. |
+| `OAO_model.py` | dataclasses + `Catalog` resolver (effective min/max/default, clamping, no-overflow). No Qt, no SQL. |
+| `OAO_storage.py` | load/save the 5-table `.sql` file via SQLite; preserve schema, regenerate seed. |
+| `OAO_canvas.py` | live preview; resolve geometry → pixels; select + drag; parent-governs-child nesting. |
+| `OAO_property_panel.py` | dynamic VS-style property grid (default/set/reset, inline ranges). |
+| `OAO_editor_window.py` | wiring: list + canvas + panel + toolbar + file watcher. |
+| `OAO_main.py` | entry point. |
 | `sql_console.py` | standalone paste-SQL → execute → browse-tables console. |
 | `containers.sql` | the single source of truth (schema + seed). |
 
