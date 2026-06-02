@@ -1,0 +1,18 @@
+# --- Core (required) -------------------------------------------------
+# The app runs fully with just these. Ingestion, concept extraction,
+# relationships, search and the whole GUI work without any ML libraries.
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9
+
+# --- Optional: embeddings + on-device training -----------------------
+# Needed only for semantic search and fine-tuning the embedding model
+# on your own vocabulary. The app detects whether these are installed
+# and enables the Model Control Panel features accordingly.
+# On an 8 GB Mac these are fine but large (~1-2 GB). Comment them out
+# if you only want the database + extraction + briefing features.
+sentence-transformers>=2.6
+torch>=2.2
+numpy>=1.26
+datasets>=2.16        # required by sentence-transformers' training loop
+accelerate>=1.1.0     # required by sentence-transformers' training loop

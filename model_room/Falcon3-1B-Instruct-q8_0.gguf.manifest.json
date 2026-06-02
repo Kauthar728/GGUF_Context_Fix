@@ -1,0 +1,9 @@
+{
+  "room": "GGUF_Context_Fix",
+  "family": "Falcon",
+  "model_name": "Falcon3-1B-Instruct-q8_0.gguf",
+  "model_path": "/Users/Shared/Share_All/Cascade_Tools/IDE_Config/Models/Falcon3-1B-Instruct-GGUF/Falcon3-1B-Instruct-q8_0.gguf",
+  "hotcache_path": "/Users/waynephilliplundall/testbed/GGUF_Context_Fix/model_room/Falcon3-1B-Instruct-q8_0.gguf.hotcache",
+  "runtime_lmdb_path": "/Users/waynephilliplundall/testbed/GGUF_Context_Fix/runtime_lmdb",
+  "resident_manifest": {"model_name":"Falcon3-1B-Instruct-q8_0.gguf","model_path":"/Users/Shared/Share_All/Cascade_Tools/IDE_Config/Models/Falcon3-1B-Instruct-GGUF/Falcon3-1B-Instruct-q8_0.gguf","booted":1,"health_code":100,"message":"InferenceWorld booted","n_gpu_layers":99,"n_ctx":1024,"n_threads":8}
+}

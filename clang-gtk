@@ -1,0 +1,11 @@
+#!/bin/bash
+FILE="$1"
+OUT="${FILE%.c}"
+# GTK + SQLite auto flags (GLOBAL)
+CFLAGS=$(pkg-config --cflags gtk+-3.0 sqlite3 2>/dev/null)
+LIBS=$(pkg-config --libs gtk+-3.0 sqlite3 2>/dev/null)
+# fallback if pkg-config fails
+if [ -z "$CFLAGS" ]; then
+  echo "⚠️ pkg-config missing GTK flags"
+fi
+clang "$FILE" -o "$OUT" $CFLAGS $LIBS

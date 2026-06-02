@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#f5f5f5"/>
+  
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-size="24" font-weight="bold" fill="#333">Python vs C Execution Process</text>
+  
+  <!-- Python Side -->
+  <text x="200" y="70" text-anchor="middle" font-size="20" font-weight="bold" fill="#007acc">Python</text>
+  
+  <!-- Python Flow -->
+  <rect x="100" y="90" width="200" height="50" rx="5" fill="#4CAF50" stroke="#333"/>
+  <text x="200" y="120" text-anchor="middle" font-size="14" fill="white">Your Code (main.py)</text>
+  
+  <line x1="200" y1="140" x2="200" y2="170" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <rect x="100" y="170" width="200" height="50" rx="5" fill="#2196F3" stroke="#333"/>
+  <text x="200" y="200" text-anchor="middle" font-size="14" fill="white">Python Interpreter</text>
+  
+  <line x1="200" y1="220" x2="200" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <rect x="100" y="250" width="200" height="50" rx="5" fill="#FF9800" stroke="#333"/>
+  <text x="200" y="280" text-anchor="middle" font-size="14" fill="white">Output</text>
+  
+  <text x="200" y="330" text-anchor="middle" font-size="12" fill="#666">Interpreter reads and runs</text>
+  <text x="200" y="345" text-anchor="middle" font-size="12" fill="#666">line by line at runtime</text>
+  
+  <!-- Divider -->
+  <line x1="400" y1="80" x2="400" y2="380" stroke="#999" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- C Side -->
+  <text x="600" y="70" text-anchor="middle" font-size="20" font-weight="bold" fill="#007acc">C</text>
+  
+  <!-- C Flow -->
+  <rect x="500" y="90" width="200" height="40" rx="5" fill="#4CAF50" stroke="#333"/>
+  <text x="600" y="115" text-anchor="middle" font-size="12" fill="white">Your Code (main.c)</text>
+  
+  <rect x="500" y="135" width="200" height="40" rx="5" fill="#4CAF50" stroke="#333"/>
+  <text x="600" y="160" text-anchor="middle" font-size="12" fill="white">Other Files (utils.c)</text>
+  
+  <line x1="600" y1="175" x2="600" y2="195" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <rect x="500" y="195" width="200" height="50" rx="5" fill="#9C27B0" stroke="#333"/>
+  <text x="600" y="225" text-anchor="middle" font-size="14" fill="white">Compiler (clang)</text>
+  
+  <line x1="600" y1="245" x2="600" y2="265" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <rect x="500" y="265" width="200" height="40" rx="5" fill="#E91E63" stroke="#333"/>
+  <text x="600" y="290" text-anchor="middle" font-size="12" fill="white">Object Files (.o)</text>
+  
+  <line x1="600" y1="305" x2="600" y2="325" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <rect x="500" y="325" width="200" height="40" rx="5" fill="#FF5722" stroke="#333"/>
+  <text x="600" y="350" text-anchor="middle" font-size="12" fill="white">Executable (a.out)</text>
+  
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#333"/>
+    </marker>
+  </defs>
+</svg>

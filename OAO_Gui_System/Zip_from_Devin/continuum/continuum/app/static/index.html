@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-accent="violet">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Continuum — Knowledge & Meaning Engine</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%237c5cff'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <!-- Menu bar -->
+  <div class="menubar" id="menubar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Continuum</span>
+    </div>
+    <nav class="menus">
+      <div class="menu" data-menu="file">
+        <button class="menu-btn">File</button>
+        <div class="menu-pop">
+          <button data-action="ingest-sample">Load sample chats</button>
+          <button data-action="open-files">Import chat files…</button>
+          <button data-action="open-folder">Import from folder…</button>
+          <div class="sep"></div>
+          <button data-action="export-db">Reveal database path</button>
+          <div class="sep"></div>
+          <button data-action="reset" class="danger">Reset database…</button>
+        </div>
+      </div>
+      <div class="menu" data-menu="edit">
+        <button class="menu-btn">Edit</button>
+        <div class="menu-pop">
+          <button data-action="run-extract">Run concept extraction</button>
+          <button data-action="generate-pairs">Generate training pairs</button>
+          <div class="sep"></div>
+          <button data-action="goto-settings">Preferences…</button>
+        </div>
+      </div>
+      <div class="menu" data-menu="view">
+        <button class="menu-btn">View</button>
+        <div class="menu-pop">
+          <button data-action="view-dashboard">Dashboard</button>
+          <button data-action="view-concepts">Concepts</button>
+          <button data-action="view-search">Search &amp; Briefing</button>
+          <button data-action="view-graph">Relationship graph</button>
+          <button data-action="view-chats">Chats</button>
+          <button data-action="view-model">Model control panel</button>
+          <button data-action="view-events">Event log</button>
+          <div class="sep"></div>
+          <button data-action="toggle-theme">Toggle light / dark</button>
+        </div>
+      </div>
+      <div class="menu" data-menu="settings">
+        <button class="menu-btn">Settings</button>
+        <div class="menu-pop">
+          <button data-action="goto-settings">Open settings</button>
+          <div class="sep"></div>
+          <div class="menu-label">Accent</div>
+          <button data-action="accent-violet">Violet</button>
+          <button data-action="accent-teal">Teal</button>
+          <button data-action="accent-amber">Amber</button>
+          <button data-action="accent-rose">Rose</button>
+        </div>
+      </div>
+      <div class="menu" data-menu="help">
+        <button class="menu-btn">Help</button>
+        <div class="menu-pop">
+          <button data-action="view-help">How it works</button>
+          <button data-action="about">About Continuum</button>
+        </div>
+      </div>
+    </nav>
+    <div class="menubar-right">
+      <span class="pill" id="deps-pill" title="Embedding model dependencies">embeddings: …</span>
+      <button class="icon-btn" id="theme-toggle" title="Toggle theme">◐</button>
+    </div>
+  </div>
+
+  <div class="shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <button class="nav-item active" data-view="dashboard"><span class="ic">▦</span><span>Dashboard</span></button>
+      <button class="nav-item" data-view="ingest"><span class="ic">⤓</span><span>Ingest</span></button>
+      <button class="nav-item" data-view="concepts"><span class="ic">◈</span><span>Concepts</span></button>
+      <button class="nav-item" data-view="search"><span class="ic">⌕</span><span>Search</span></button>
+      <button class="nav-item" data-view="graph"><span class="ic">⬡</span><span>Graph</span></button>
+      <button class="nav-item" data-view="chats"><span class="ic">❒</span><span>Chats</span></button>
+      <button class="nav-item" data-view="model"><span class="ic">⚙</span><span>Model</span></button>
+      <button class="nav-item" data-view="events"><span class="ic">≡</span><span>Events</span></button>
+      <div class="sidebar-foot">
+        <button class="nav-item" data-view="settings"><span class="ic">⛭</span><span>Settings</span></button>
+        <button class="nav-item" data-view="help"><span class="ic">?</span><span>Help</span></button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main" id="main">
+      <!-- Dashboard -->
+      <section class="view active" data-view="dashboard">
+        <header class="view-head">
+          <h1>Dashboard</h1>
+          <p class="muted">Your chats become a structured, evidence-backed knowledge surface.</p>
+        </header>
+        <div class="pipeline" id="pipeline">
+          <div class="pstep" data-step="chats"><div class="pn">1</div><div class="pl">Chats</div><div class="pv" id="ps-chats">0</div></div>
+          <div class="parrow">→</div>
+          <div class="pstep" data-step="turns"><div class="pn">2</div><div class="pl">Turns</div><div class="pv" id="ps-turns">0</div></div>
+          <div class="parrow">→</div>
+          <div class="pstep" data-step="terms"><div class="pn">3</div><div class="pl">Concepts</div><div class="pv" id="ps-terms">0</div></div>
+          <div class="parrow">→</div>
+          <div class="pstep" data-step="meanings"><div class="pn">4</div><div class="pl">Meanings</div><div class="pv" id="ps-meanings">0</div></div>
+          <div class="parrow">→</div>
+          <div class="pstep" data-step="rel"><div class="pn">5</div><div class="pl">Relations</div><div class="pv" id="ps-rel">0</div></div>
+          <div class="parrow">→</div>
+          <div class="pstep" data-step="emb"><div class="pn">6</div><div class="pl">Embeddings</div><div class="pv" id="ps-emb">0</div></div>
+        </div>
+        <div class="cards">
+          <div class="card stat"><div class="stat-v" id="d-chats">0</div><div class="stat-l">Chats</div></div>
+          <div class="card stat"><div class="stat-v" id="d-turns">0</div><div class="stat-l">Turns</div></div>
+          <div class="card stat"><div class="stat-v" id="d-terms">0</div><div class="stat-l">Concepts</div></div>
+          <div class="card stat"><div class="stat-v" id="d-meanings">0</div><div class="stat-l">Meanings</div></div>
+          <div class="card stat"><div class="stat-v" id="d-evidence">0</div><div class="stat-l">Evidence</div></div>
+          <div class="card stat"><div class="stat-v" id="d-rel">0</div><div class="stat-l">Relationships</div></div>
+        </div>
+        <div class="quick">
+          <button class="btn" data-action="ingest-sample">Load sample chats</button>
+          <button class="btn primary" data-action="run-extract">Run extraction</button>
+          <button class="btn" data-view-jump="search">Try a search</button>
+        </div>
+        <div class="card hint">
+          <strong>How to use:</strong> Ingest your markdown chats → run extraction → search a term like
+          <code>MemUnit</code> to get an evidence-backed briefing packet for a larger model.
+          Optionally train the embedding model on your own vocabulary in the Model panel.
+        </div>
+      </section>
+
+      <!-- Ingest -->
+      <section class="view" data-view="ingest">
+        <header class="view-head"><h1>Ingest chats</h1><p class="muted">Everything runs locally. Nothing leaves this machine.</p></header>
+        <div class="grid2">
+          <div class="card">
+            <h3>Drop or choose files</h3>
+            <div class="dropzone" id="dropzone">
+              <p>Drag &amp; drop <b>.md</b> / <b>.txt</b> chat files here</p>
+              <p class="muted">or</p>
+              <button class="btn" id="choose-files">Choose files</button>
+              <input type="file" id="file-input" multiple accept=".md,.markdown,.txt" hidden />
+            </div>
+          </div>
+          <div class="card">
+            <h3>Import from a folder on this machine</h3>
+            <p class="muted">Paste an absolute path to a folder of chat exports.</p>
+            <div class="row">
+              <input class="input" id="folder-path" placeholder="/Users/you/chats" />
+              <button class="btn" id="folder-import">Import</button>
+            </div>
+            <div class="sep-line"></div>
+            <h3>Paste a chat</h3>
+            <input class="input" id="paste-title" placeholder="Title (optional)" />
+            <textarea class="input area" id="paste-text" placeholder="Paste markdown chat text…"></textarea>
+            <button class="btn" id="paste-import">Ingest pasted text</button>
+            <button class="btn ghost" data-action="ingest-sample">Load bundled sample</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="row between">
+            <h3>After importing, build the knowledge</h3>
+            <button class="btn primary" data-action="run-extract">Run concept extraction</button>
+          </div>
+          <p class="muted">Extraction discovers concepts, meanings, evidence and relationships from the imported turns.</p>
+        </div>
+      </section>
+
+      <!-- Concepts -->
+      <section class="view" data-view="concepts">
+        <header class="view-head"><h1>Concepts</h1><p class="muted">Meaning-bearing terms discovered in your chats.</p></header>
+        <div class="row"><input class="input" id="concept-filter" placeholder="Filter concepts…" /></div>
+        <div class="split">
+          <div class="card list" id="concept-list"></div>
+          <div class="card detail" id="concept-detail"><p class="muted">Select a concept to see its meaning, evidence and relationships.</p></div>
+        </div>
+      </section>
+
+      <!-- Search -->
+      <section class="view" data-view="search">
+        <header class="view-head"><h1>Search &amp; Briefing</h1><p class="muted">Resolve a term into an evidence-backed briefing packet for a larger model.</p></header>
+        <div class="row">
+          <input class="input big" id="search-q" placeholder="Ask about a concept, e.g. MemUnit or 'memory transport thing'" />
+          <button class="btn primary" id="search-go">Resolve</button>
+        </div>
+        <div class="split">
+          <div class="card detail" id="search-result"><p class="muted">Results appear here.</p></div>
+          <div class="card">
+            <div class="row between"><h3>Briefing packet</h3><button class="btn ghost sm" id="copy-briefing">Copy</button></div>
+            <pre class="briefing" id="briefing-text">—</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Graph -->
+      <section class="view" data-view="graph">
+        <header class="view-head"><h1>Relationship graph</h1><p class="muted">Concepts connected by co-occurrence and explicit relationships.</p></header>
+        <div class="card"><canvas id="graph-canvas" height="560"></canvas></div>
+      </section>
+
+      <!-- Chats -->
+      <section class="view" data-view="chats">
+        <header class="view-head"><h1>Chats</h1><p class="muted">Raw source, split into user / assistant turns.</p></header>
+        <div class="split">
+          <div class="card list" id="chat-list"></div>
+          <div class="card detail" id="chat-detail"><p class="muted">Select a chat to view its turns.</p></div>
+        </div>
+      </section>
+
+      <!-- Model control panel -->
+      <section class="view" data-view="model">
+        <header class="view-head"><h1>Model control panel</h1><p class="muted">The embedding model is the finder. Train it on your own vocabulary.</p></header>
+        <div class="cards">
+          <div class="card stat"><div class="stat-v" id="m-deps">—</div><div class="stat-l">Dependencies</div></div>
+          <div class="card stat"><div class="stat-v" id="m-active">base</div><div class="stat-l">Active model</div></div>
+          <div class="card stat"><div class="stat-v" id="m-embedded">0</div><div class="stat-l">Embedded concepts</div></div>
+          <div class="card stat"><div class="stat-v" id="m-pairs">0</div><div class="stat-l">Training pairs</div></div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h3>Pipeline</h3>
+            <ol class="steps">
+              <li>Generate training pairs from concepts, meanings &amp; relationships.</li>
+              <li>Fine-tune a small MiniLM model on your vocabulary.</li>
+              <li>Embed all concepts with the active model for semantic search.</li>
+            </ol>
+            <div class="row wrap">
+              <button class="btn" id="btn-genpairs">Generate pairs</button>
+              <button class="btn" id="btn-embed">Embed concepts</button>
+              <button class="btn primary" id="btn-train">Train model</button>
+            </div>
+            <div class="row">
+              <label class="muted sm">Epochs</label>
+              <input class="input sm" id="train-epochs" type="number" value="1" min="1" max="6" style="max-width:90px" />
+            </div>
+            <div class="banner" id="model-banner" hidden></div>
+          </div>
+          <div class="card">
+            <h3>Model versions</h3>
+            <div class="list mini" id="version-list"><p class="muted">No trained versions yet.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Events -->
+      <section class="view" data-view="events">
+        <header class="view-head"><h1>Event log</h1><p class="muted">Auditable record of ingestion, extraction and training.</p></header>
+        <div class="card list" id="event-list"></div>
+      </section>
+
+      <!-- Settings -->
+      <section class="view" data-view="settings">
+        <header class="view-head"><h1>Settings</h1><p class="muted">Preferences are stored in the local database.</p></header>
+        <div class="card">
+          <div class="set-row"><label>Theme</label>
+            <div class="seg"><button class="seg-btn" data-set-theme="dark">Dark</button><button class="seg-btn" data-set-theme="light">Light</button></div>
+          </div>
+          <div class="set-row"><label>Accent</label>
+            <div class="seg">
+              <button class="seg-btn" data-set-accent="violet">Violet</button>
+              <button class="seg-btn" data-set-accent="teal">Teal</button>
+              <button class="seg-btn" data-set-accent="amber">Amber</button>
+              <button class="seg-btn" data-set-accent="rose">Rose</button>
+            </div>
+          </div>
+          <div class="set-row"><label>Minimum occurrences for a concept</label>
+            <input class="input sm" id="set-minocc" type="number" min="1" max="20" value="2" style="max-width:90px" />
+          </div>
+          <div class="set-row"><label>Database path</label><code id="set-dbpath" class="muted">—</code></div>
+          <div class="row"><button class="btn danger" data-action="reset">Reset database</button></div>
+        </div>
+      </section>
+
+      <!-- Help -->
+      <section class="view" data-view="help">
+        <header class="view-head"><h1>How it works</h1></header>
+        <div class="card prose">
+          <p><b>Continuum</b> turns years of chats into a queryable knowledge surface. The database is the
+          source of truth; the embedding model is only the finder; a larger model does the reasoning on top.</p>
+          <p>The pipeline: <b>Chats → Turns → Concepts → Meanings → Evidence → Relationships → Embeddings</b>.
+          When you search a term, Continuum assembles an <b>evidence-backed briefing packet</b> so a larger
+          model never has to guess what you mean.</p>
+          <p>Everything runs locally. Nothing leaves your machine.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Toast + modal -->
+  <div class="toast" id="toast" hidden></div>
+  <div class="modal" id="modal" hidden>
+    <div class="modal-card">
+      <h3 id="modal-title">Title</h3>
+      <p id="modal-body" class="muted"></p>
+      <div class="row end"><button class="btn ghost" id="modal-cancel">Cancel</button><button class="btn danger" id="modal-ok">Confirm</button></div>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <span id="status-job" class="muted">idle</span>
+    <span class="spacer"></span>
+    <span id="status-db" class="muted"></span>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

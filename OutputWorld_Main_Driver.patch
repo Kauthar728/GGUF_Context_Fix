@@ -1,0 +1,116 @@
+/*
+#   Ghost[Patch:OutputWorld_Binding|Main_Driver Integration:MemUnit binding for OutputWorld delivery
+#   Purpose:Wire OutputWorld into Main_Driver runtime with proper MemUnit binding
+#   Pattern:Follows LMDBWorld binding pattern exactly
+#   Apply:Merge into Main_Driver.c after LMDBWorld binding block ]
+*/
+
+/*##section##[Add to Main_Driver.c includes]*/
+/* Add after LMDBWorld include: */
+#include "OutputWorld.c"
+
+/*##section##[Add to Main_Driver.c main() declarations]*/
+/* Add after LMDBWorld_State declaration: */
+OutputWorld_State * output_world;
+
+/*##section##[Add to Main_Driver.c world binding callbacks]*/
+/* Add after Main_Driver_lmdb_cleanup: */
+
+static int Main_Driver_output_boot(void * world, const char * config) {
+    OutputWorld_State * self = (OutputWorld_State *)world;
+    (void)config;
+    return OutputWorld_boot(self, NULL);
+}
+
+static const char * Main_Driver_output_health(void * world) {
+    OutputWorld_State * self = (OutputWorld_State *)world;
+    return OutputWorld_health(self);
+}
+
+static const char * Main_Driver_output_exec(void * world, const char * action, const char * payload, int number_arg) {
+    OutputWorld_State * self = (OutputWorld_State *)world;
+    return OutputWorld_execute_text(self, action, payload, number_arg);
+}
+
+static void Main_Driver_output_cleanup(void * world) {
+    OutputWorld_State * self = (OutputWorld_State *)world;
+    OutputWorld_cleanup(self);
+}
+
+/*##section##[Add to Main_Driver.c main() world creation]*/
+/* Add after lmdb_world creation: */
+output_world = OutputWorld_create();
+if (!output_world) {
+    fprintf(stderr, "OutputWorld allocation failed\n");
+    MemUnit_destroy(memunit);
+    InferenceWorld_destroy(world);
+    LMDBWorld_destroy(lmdb_world);
+    return 1;
+}
+
+/*##section##[Add to Main_Driver.c main() world binding]*/
+/* Add after LMDBWorld binding: */
+
+bind_result = MemUnit_bind_world_runtime(
+    memunit,
+    "OutputWorld",
+    "Output_Delivery",
+    "phase=1",
+    "MemUnit_ramdb",
+    output_world,
+    Main_Driver_output_boot,
+    NULL,
+    Main_Driver_output_health,
+    Main_Driver_output_exec,
+    Main_Driver_output_cleanup
+);
+if (bind_result.status != 0) {
+    fprintf(stderr, "MemUnit OutputWorld bind failed\n");
+    free(bind_result.value);
+    free(bind_result.error);
+    OutputWorld_destroy(output_world);
+    LMDBWorld_destroy(lmdb_world);
+    InferenceWorld_destroy(world);
+    MemUnit_destroy(memunit);
+    return 1;
+}
+free(bind_result.value);
+free(bind_result.error);
+
+/*##section##[Add to Main_Driver.c main() world boot]*/
+/* Add after LMDBWorld boot: */
+
+response = MemUnit_execute_text(memunit, "OutputWorld", "boot", "", 0);
+if (!response || strncmp(response, "{[Error:", 8) == 0) {
+    fprintf(stderr, "OutputWorld boot failed: %s\n", response ? response : MemUnit_health(memunit));
+    MemUnit_destroy(memunit);
+    return 1;
+}
+
+/*##section##[Add to Main_Driver.c Main_Driver_run_shell() commands]*/
+/* Add to the command handling block before default chat: */
+
+if (strncmp(line, "/output ", 8) == 0) {
+    char target[64];
+    char path[OUTPUTWORLD_PATH];
+    char content[OUTPUTWORLD_PAYLOAD];
+    char payload[OUTPUTWORLD_PAYLOAD + OUTPUTWORLD_PATH + 64];
+    int parsed = sscanf(line + 8, "%63s %4095[^|]|%65535[^\n]", target, path, content);
+    if (parsed >= 1) {
+        if (parsed == 1) {
+            /* screen only: /output screen <content> */
+            snprintf(payload, sizeof(payload), "%s||%s", target, line + 8 + strlen(target) + 1);
+        } else if (parsed == 2) {
+            /* target with implicit content: /output txt /path/to/file.txt */
+            snprintf(payload, sizeof(payload), "%s|path=%s|", target, path);
+        } else {
+            /* full: /output txt /path/to/file.txt|content here */
+            snprintf(payload, sizeof(payload), "%s|path=%s|%s", target, path, content);
+        }
+        printf("%s\n", MemUnit_execute_text(memunit, "OutputWorld", "deliver", payload, 0));
+    } else {
+        printf("usage: /output <target> [path]|content\n");
+        printf("targets: screen, txt, json, csv, markdown, log, ramdb\n");
+    }
+    continue;
+}
