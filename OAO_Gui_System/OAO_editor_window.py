@@ -134,6 +134,11 @@ class EditorWindow(QMainWindow):
         tb.addAction(reload_act)
         tb.addSeparator()
 
+        run_act = QAction("Run ▶", self)
+        run_act.triggered.connect(self.run_preview)
+        tb.addAction(run_act)
+        tb.addSeparator()
+
         self.live_chk = QCheckBox("Live")
         self.live_chk.setChecked(True)
         tb.addWidget(self.live_chk)
@@ -161,6 +166,25 @@ class EditorWindow(QMainWindow):
         ws_del = QAction("Delete layout", self)
         ws_del.triggered.connect(self.delete_workspace)
         tb.addAction(ws_del)
+
+    def run_preview(self) -> None:
+        """Render the current layout into a real, live PyQt window.
+
+        Saves the spec first, then opens a LiveRenderedApp bound to the same
+        .sql file so the running app hot-reloads as you keep editing here.
+        """
+        if self.catalog is None:
+            return
+        self.save_to_disk()
+        from OAO_renderer import LiveRenderedApp
+        self._preview = LiveRenderedApp(self.sql_path)
+        ws = self._active_ws()
+        if ws is not None:
+            self._preview.setWindowTitle(f"OAO — Live App: {ws.name}")
+        self._preview.show()
+        self._preview.raise_()
+        self._preview.activateWindow()
+        self.status.showMessage("Launched live app (edits here hot-reload it)", 3000)
 
     def _rebuild_new_menu(self) -> None:
         self.new_menu.clear()
